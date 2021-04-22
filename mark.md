@@ -112,22 +112,32 @@ private
 ## 6.URL /postsにPOSTリクエストがサーバーに送信  
 titleフォーム、bodyフォームに内容を記述し投稿ボタンを押すと、`まずPOSTメソッドの'/posts'といわれるところに送信`されます。
 
-** - 投稿ボタンが押された時のターミナルの状況**
+**- 投稿ボタンが押された時のターミナルの状況**
 ```
 1.Started POST "/posts" for ::1 at 2021-04-19 12:05:00 +0900
 2.Parameters: {"authenticity_token"=>"[FILTERED]", "post"=>{"title"=>"タイトル", "body"=>"ボディー"}, "commit"=>"Create Post"
 3.TRANSACTION (0.1ms)  begin transaction
    ↳ app/controllers/posts_controller.rb:13:in `create'
 ```
-*1行目について*
+*1行目について*  
 `POSTと言うリクエストが'/posts'`と言うURLに対して行われたと言う意味です。  
 投稿すると'/posts'と言うURLに対して指令が出されます。ここのルーティングは`routes.rb`で設定されています。  
 ターミナルで**rails routes**と入力、実行してもらうとposts_pathにはGETとPOSTの2種類があることがわかります。  
 `posts_path`に対してgetをすると`posts#index`アクションが呼び出され、  
 `posts_path`に対してpostをすると`posts#create`アクションが呼び出されます。  
-今回は空のインスタンスの場合なので/postsに対して、POSTリクエストが送信されています。  
-*2行目について*
+今回はform_withで自動的にHTMLのフォームタグが生成され、methodの部分がpostになっているのでPOST通信が行われています。    
+*2行目について*  
 そして、createアクションが反応すると、@postと言う変数にPost.newが渡されさらに@postは（post_params）と言う引数を持っています。  
 post_paramsと言うのは、privateで定義されているリクエストとともに送られてくる情報のことをいいます。  
-*3行目について*
+*3行目について*  
+データベースに変更をくわえる手続きを「TRANSACTION」といういいます。createはposts_controllerでのcreateアクションで行われているという
 
+**※privateについて**  
+このprivateでは何が定義されているかというと上記の(:post)と言うパラメーターのキーの中にさらに（:titleと:body）のキーを許可するということが書いてあります。  
+**ストロングパラメータについて**  
+requireメソッドを使用する事で、params内の特定のキーに紐付く値だけを抽出する事ができます。  
+そのため、引数には取り出したい値のキーを指定する必要があります。permitメソッドを使用する事で、許可された値のみを取得することができます。  
+## 7.createアクションが実行され、フォーム内のデータをデータベースに保存  
+そして、createアクションで上から順にユーザーからのデータを@postに代入し、@post.saveでデータベースへ保存をします。  
+## 8.新規投稿がindex.html.erbで表示され、ユーザーの画面に表示される  
+そして、redirect_to action: 'index' でトップ画面へリダイレクトをし、トップ画面で投稿されていることを確認し新規投稿の流れは終了となります。
