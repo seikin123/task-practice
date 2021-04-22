@@ -8,7 +8,8 @@
 7.createアクションが実行され、フォーム内のデータをデータベースに保存  
 8.新規投稿がindex.html.erbで表示され、ユーザーの画面に表示される  
 
-## 1.まずは、データの格納先である、データベースに保存するためのモデルを作ります。  
+## 1.データベースに保存するためのモデルを作成後テーブルを作成するための、マイグレーションファイルを作成  
+まずは、データの格納先である、データベースに保存するためのモデルを作ります。  
 モデルは「データベース」そのものというよりは、データベースに対応した箱を作り、その取扱い方法を記述するというものです。  
 **記述の仕方**  
 Model名は`大文字から始まる単数形`にします。今回は投稿のタイトルをtitileカラム、本文のbodyカラムの2種類を作成します。  
@@ -93,4 +94,40 @@ end
     </p>
   <% end %>
 ```
+
+## 5.投稿ボタンが押されたら反応するcreateアクションを実装していきます。
+```Ruby
+def create
+  @post = Post.new(post_params) #データを新規登録するためのインスタンス生成
+  @post.save #データをデータベースに保存するためのsaveメソッド実行
+  redirect_to action: 'index' #トップ画面へリダイレクト
+end
+
+private
+  def post_params #ストロングパラメータ
+    params.require(:post).permit(:title, :body)
+  end
+ end
+```
+## 6.URL /postsにPOSTリクエストがサーバーに送信  
+titleフォーム、bodyフォームに内容を記述し投稿ボタンを押すと、`まずPOSTメソッドの'/posts'といわれるところに送信`されます。
+
+** - 投稿ボタンが押された時のターミナルの状況**
+```
+1.Started POST "/posts" for ::1 at 2021-04-19 12:05:00 +0900
+2.Parameters: {"authenticity_token"=>"[FILTERED]", "post"=>{"title"=>"タイトル", "body"=>"ボディー"}, "commit"=>"Create Post"
+3.TRANSACTION (0.1ms)  begin transaction
+   ↳ app/controllers/posts_controller.rb:13:in `create'
+```
+*1行目について*
+`POSTと言うリクエストが'/posts'`と言うURLに対して行われたと言う意味です。  
+投稿すると'/posts'と言うURLに対して指令が出されます。ここのルーティングは`routes.rb`で設定されています。  
+ターミナルで**rails routes**と入力、実行してもらうとposts_pathにはGETとPOSTの2種類があることがわかります。  
+`posts_path`に対してgetをすると`posts#index`アクションが呼び出され、  
+`posts_path`に対してpostをすると`posts#create`アクションが呼び出されます。  
+今回は空のインスタンスの場合なので/postsに対して、POSTリクエストが送信されています。  
+*2行目について*
+そして、createアクションが反応すると、@postと言う変数にPost.newが渡されさらに@postは（post_params）と言う引数を持っています。  
+post_paramsと言うのは、privateで定義されているリクエストとともに送られてくる情報のことをいいます。  
+*3行目について*
 
