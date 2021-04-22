@@ -1,4 +1,5 @@
 # 投稿機能について
+*目次*
 1.データベースに保存するためのモデルを作成後テーブルを作成するための、マイグレーションファイルを作成  
 2.データベースに反映させる  
 3.posts_controller.rb内にnewアクションを定義  
@@ -56,7 +57,8 @@ end
 ```
 
 # 新規投稿画面について記述していきます
-## 3.まず、app/controllers/posts_controller.rb内にnewアクションを定義します。
+## 3.posts_controller.rb内にnewアクションを定義  
+まず、app/controllers/posts_controller.rb内にnewアクションを定義します。
 ```Ruby
 app/controllers/posts_controller.rb
 
@@ -97,6 +99,8 @@ end
 
 ## 5.投稿ボタンが押されたら反応するcreateアクションを実装していきます。
 ```Ruby
+app/controllers/posts_controller.rb
+
 def create
   @post = Post.new(post_params) #データを新規登録するためのインスタンス生成
   @post.save #データをデータベースに保存するためのsaveメソッド実行
@@ -139,5 +143,6 @@ requireメソッドを使用する事で、params内の特定のキーに紐付�
 そのため、引数には取り出したい値のキーを指定する必要があります。permitメソッドを使用する事で、許可された値のみを取得することができます。  
 ## 7.createアクションが実行され、フォーム内のデータをデータベースに保存  
 そして、createアクションで上から順にユーザーからのデータを@postに代入し、@post.saveでデータベースへ保存をします。  
+redirect_to action: 'index' でトップ画面へリダイレクトをし、トップ画面で投稿されていることを確認し新規投稿の流れは終了となります。
+
 ## 8.新規投稿がindex.html.erbで表示され、ユーザーの画面に表示される  
-そして、redirect_to action: 'index' でトップ画面へリダイレクトをし、トップ画面で投稿されていることを確認し新規投稿の流れは終了となります。
