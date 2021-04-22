@@ -8,10 +8,10 @@
 7.createアクションが実行され、フォーム内のデータをデータベースに保存  
 8.新規投稿がindex.html.erbで表示され、ユーザーの画面に表示される  
 
- 1.まずは、データの格納先である、データベースに保存するためのモデルを作ります。
-モデルは「データベース」そのものというよりは、データベースに対応した箱を作り、その取扱い方法を記述するというものです。
-記述の仕方
-Model名は大文字から始まる単数形にします。今回は投稿のタイトルをtitileカラム、本文のbodyカラムの2種類を作成します。※一つ一つのデータの格納場所をカラムと言います。
+## 1.まずは、データの格納先である、データベースに保存するためのモデルを作ります。  
+モデルは「データベース」そのものというよりは、データベースに対応した箱を作り、その取扱い方法を記述するというものです。  
+記述の仕方  
+Model名は大文字から始まる単数形にします。今回は投稿のタイトルをtitileカラム、本文のbodyカラムの2種類を作成します。※一つ一つのデータの格納場所をカラムと言います。  
 データ型も指定する必要があり、titleは255文字以内としてString型、bodyはそれ以上入力する可能性があるのでtext型にします。
 ```Ruby
 $ rails g model Post title:string body:text
@@ -19,9 +19,10 @@ $ rails g model Post title:string body:text
 上記のコマンドを実行すると、モデル、マイグレーション、テストファイルが作成されます。
 マイグレーションファイルはデータベースを変更するための指示書のようなもので上記のコマンドでは下記の内容のファイルになります。
 
-class CreatePosts < ActiveRecord::Migration[6.1]
+
 ```Ruby
-  def change
+class CreatePosts < ActiveRecord::Migration[6.1]
+def change
     create_table :posts do |t|
       t.string :title
       t.text :body
@@ -31,7 +32,7 @@ class CreatePosts < ActiveRecord::Migration[6.1]
 end
 ```
 
-2.データベースに反映させる
+## 2.データベースに反映させる
 このままではデータベースに反映されていないため、記入したマイグレーションファイルを下記のコードをターミナルで実行して反映させると、データベースにテーブルが作成され、カラムが追加されます。
 確認方法
 db/schema.rbというファイルをみると、ここに追加されていることでデータベースに反映されたことが確認できます。
@@ -51,7 +52,7 @@ ActiveRecord::Schema.define(version: 2021_04_19_121504) do
 end
 ```
 新規投稿画面について記述していきます
-3.まず、app/controllers/posts_controller.rb内にnewアクションを定義します。
+## 3.まず、app/controllers/posts_controller.rb内にnewアクションを定義します。
 ```Ruby
 app/controllers/posts_controller.rb
 
